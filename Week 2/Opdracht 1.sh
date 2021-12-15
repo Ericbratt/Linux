@@ -7,42 +7,46 @@ mkdir bestand
 
 cd "$HOME"/"$dir"
 
-
-
+echo "is het een week of maand? vul :[week,maand] in"
+read input
 for x in *
 do
-	if [ "$datum" = "week" ]
+
+	if [ "$input" = "week" ]
 	then
-		periode=$(date -r "$x" +%W)
+		maandofweek=$(date -r "$file" +%W)
+
 	else
-		if [ "$datum" = "maand" ]
-		then
-			periode=$(date -r "$x" +%m)
-		else
-			echo "Geen datum opgegeven"
-			exit 1
-		fi
-	fi
-
-
-
-	if [[ -d "$HOME"/bestand/"$periode" ]]
+	if [ "$input" = "maand" ]
 	then
-		cp -v "$x" "$HOME"/bestand/"$periode"/"$x"
+	maandofweek=$(date -r "$file" +%m)
 	else
-		mkdir "$HOME"/bestand/"$periode"
-		cp -v "$x" "$HOME"/bestand/"$periode"/"$x"
+		echo "Je hebt iets anders gekozen dan maand of week"
+		exit 1
 	fi
+fi
 
-	oud=$(sudo md5sum "$HOME"/"$dir"/"$x" | cut -d " " -f1)
-	nieuw=$(sudo md5sum "$HOME"/bestand/"$periode"/"$x" | cut -d " " -f1)
 
-	if [ "$oud" = "$nieuw" ]
-	then
-		rm "$x"
-	else
-		echo "$x is fout"
-	fi
+
+
+if [[ -d "$HOME"/bestand/"$maandofweek" ]]
+then
+	cp -v "$file" "$HOME"/bestand/"$maandofweek"/"$file"
+else
+	mkdir "$HOME"/bestand/"$periode"
+	cp -v "$file" "$HOME"/bestand/"$maandofweek"/"$file"
+fi
+
+origineel=$(sudo md5sum "$HOME"/"$dir"/"$file" | cut -d " " -f1)
+kopie=$(sudo md5sum "$HOME"/bestand/"$maandofweek"/"$file" | cut -d " " -f1)
+
+if [ "$origineel" = "$kopie" ]
+then
+	rm "$file"
+else
+	echo "$fiile is fout"
+fi
 
 	echo ""
+
 done
